@@ -13,10 +13,9 @@ from keras.losses import mse
 from keras.optimizers import Adam, SGD, RMSprop
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 # Load hyperparameter configuration
-hyper = yaml.safe_load(open('../config/hyper.yaml'))
+hyper = yaml.safe_load(open('../../config/hyper.yaml'))
 
 # Load data, and change the shape into (samples, features)
 from loaddata import load_data
@@ -88,9 +87,9 @@ def train(result_path):
 
     # Build the model
     m = build_model([hyper['bag'] for _ in range(hyper['depth'])],
-                  reg=None,
-                  act='relu',
-                  mean=1.0)
+                    reg=None,
+                    act='relu',
+                    mean=1.0)
 
     # Define callbacks
     cbs = [keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True),

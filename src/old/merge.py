@@ -19,10 +19,10 @@ cmax = 100000
 if len(sys.argv) > 2:
     cmax = int(sys.argv[2])
 
-if not os.path.isdir('../results'):
+if not os.path.isdir('../../results'):
     exit()
 
-fns = ['../results/' + zw + '/result.npz' for zw in os.listdir('../results')][:cmax + 10]
+fns = ['../results/' + zw + '/result.npz' for zw in os.listdir('../../results')][:cmax + 10]
 fns = [zw for zw in fns if os.path.isfile(zw)]
 
 from sklearn.metrics import roc_auc_score as auc
@@ -61,4 +61,4 @@ auc_score = auc(y_true, y_score)
 if not quiet:
     print("----------", auc_score)
 
-np.savez_compressed('../results/auc.npz', auc=auc_score, aucs=aucs, wids=wids)
+np.savez_compressed('../../results/auc.npz', auc=auc_score, aucs=aucs, wids=wids)
