@@ -11,10 +11,6 @@ def load_data():
     return dataset()
 
 
-def load_ts_data():
-    return
-
-
 # If executed directly
 if __name__ == "__main__":
     (x, y), (tx, ty) = load_data()

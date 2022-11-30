@@ -1,6 +1,8 @@
-"lr": 0.03
-"batch": 100
-"depth": 3
-"bag": 128
-"dex": 0
-"rounds": 3000
+# Hyperparameter configuration for DEAN-TS
+
+"lr": 0.03      # Learning rate
+"batch": 100    # Batch size
+"depth": 3      # Number of layers for each base detector network
+"bag": 128      # Bagging size for the feature bagging
+"dex": 0        # The y value to be considered normal
+"rounds": 3000  # How many models to train
