@@ -1,0 +1,14 @@
+# Parameter configuration
+
+# General specifications
+result_path: '../results'                # Relative base path for DEAN-TS results and model information
+dataset_path: '../datasets/'             # Relative base path for datasets
+ensemble_size: 20                        # Number of models to train
+test_ratio: 0.30                         # Percentage of samples set aside strictly for testing
+
+# Submodel specifications
+lr: 0.03            # Learning rate
+batch: 20           # Batch size
+depth: 3            # Number of layers for each base detector network
+bag: 8              # Dimensionality for each base model (bag - 1 lag features will be chosen)
+look_back: 32       # How many previous time steps are taken into consideration for feature selection
