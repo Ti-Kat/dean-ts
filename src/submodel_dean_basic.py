@@ -17,7 +17,7 @@ def build_submodel(unit_sizes, reg=None, act='relu', mean=1.0, lr=0.01):
     for units in unit_sizes[1:-1]:
         outputs = Dense(units,
                         activation=act,
-                        use_bias=False,
+                        use_bias=True,
                         kernel_initializer=keras.initializers.TruncatedNormal(),
                         kernel_regularizer=reg)(outputs)
 
