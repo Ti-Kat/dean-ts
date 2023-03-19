@@ -77,3 +77,8 @@ def store_results(result_dir, y_score, auc_score, lag_indices):
                         y_score=y_score,
                         auc_score=auc_score,
                         lag_indices=lag_indices)
+
+
+def load_results(result_dir):
+    results = np.load(f'{result_dir}/result.npz')
+    return {key: results[key] for key in results}
