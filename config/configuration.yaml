@@ -3,6 +3,7 @@
 # General specifications
 result_path: '../results'                # Relative base path for DEAN-TS results and model information
 dataset_path: '../datasets/'             # Relative base path for datasets
+seed: 21                                 # Randomness seed for reproducible results
 ensemble_size: 20                        # Number of models to train
 test_ratio: 0.30                         # Percentage of samples set aside strictly for testing
 
