@@ -66,19 +66,30 @@ def create_result_dir(dataset_name: str, model_index: int = None):
     return result_dir
 
 
-# TODO: Implement this
+def store_as_yaml(result_dir, file_name, content: dict):
+    with open(f'{result_dir}/{file_name}', 'w') as yaml_file:
+        yaml.dump(content, yaml_file, default_flow_style=False)
+
+
+def store_as_npz(result_dir, file_name, content: dict):
+    np.savez_compressed(f'{result_dir}/{file_name}', **content)
+
+
 def store_general_information(result_dir, dataset_name, configuration):
-    return
+    store_as_yaml(
+        result_dir,
+        'general_infos.yaml',
+        {
+            'dataset': dataset_name,
+            'config': configuration,
+        }
+    )
 
 
-# TODO: Use *args instead
-def store_results(result_dir, y_score, auc_score, lag_indices):
-    np.savez_compressed(f'{result_dir}/result.npz',
-                        y_score=y_score,
-                        auc_score=auc_score,
-                        lag_indices=lag_indices)
+def store_results(result_dir, results: dict):
+    store_as_npz(result_dir, 'result.npz', results)
 
 
 def load_results(result_dir):
-    results = np.load(f'{result_dir}/result.npz')
+    results = np.load(f'{result_dir}/result.npz', allow_pickle=True)
     return {key: results[key] for key in results}
