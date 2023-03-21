@@ -6,7 +6,6 @@ from keras.optimizers import Adam
 import numpy as np
 
 
-# noinspection DuplicatedCode
 def build_submodel(unit_sizes, reg=None, act='relu', mean=1.0, lr=0.01):
     """ Builds basic dean submodel
     """
@@ -41,7 +40,6 @@ def build_submodel(unit_sizes, reg=None, act='relu', mean=1.0, lr=0.01):
     return model
 
 
-# noinspection DuplicatedCode
 def train_submodel(model: Model, train: np.ndarray, hyper, result_dir: str, verbosity=0) -> object:
     """ Trains submodel and returns history object
     """
@@ -68,7 +66,6 @@ def train_submodel(model: Model, train: np.ndarray, hyper, result_dir: str, verb
     return history
 
 
-# noinspection DuplicatedCode
 def score(model: Model, train: np.ndarray, test_normal: np.ndarray, test_anomalous: np.ndarray) -> np.ndarray:
     """ Return y_score (order: first normal scores than anomalous ones)
     """
