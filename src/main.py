@@ -24,7 +24,6 @@ test_indices_anomalous = np.where(complete_dataset[split_index:, 2] == 1)[0]
 
 # Drop time and anomaly columns
 dataset = np.delete(complete_dataset, obj=[0, -1], axis=1)
-dataset = np.c_[dataset, dataset]
 channel_count = dataset.shape[1]
 
 # Define perfect scores
