@@ -19,25 +19,22 @@ complete_dataset = load_dataset(dataset_name, 'numpy')
 
 # Specify which indices of the test split correspond to actual anomalies
 split_index = int(complete_dataset.shape[0] * (1 - config['test_ratio']))
-test_indices_normal = np.where(complete_dataset[split_index:, 2] == 0)[0]
-test_indices_anomalous = np.where(complete_dataset[split_index:, 2] == 1)[0]
+test_indices_normal = np.where(complete_dataset[split_index:, -1] == 0)[0]
+test_indices_anomalous = np.where(complete_dataset[split_index:, -1] == 1)[0]
 
 # Drop time and anomaly columns
 dataset = np.delete(complete_dataset, obj=[0, -1], axis=1)
 channel_count = dataset.shape[1]
 
 # Define perfect scores
-y_true = np.concatenate((
-    np.zeros_like(test_indices_normal),
-    np.ones_like(test_indices_anomalous),
-))
+y_true = complete_dataset[split_index:, -1].astype(int)
 
 # Persist general information for current run
 result_dir = create_result_dir(dataset_name)
 store_general_information(result_dir, dataset_name, config)
 
 # Init list to gather submodel scores
-y_scores = []
+y_scores_list = []
 
 # Train submodels
 for i in range(0, config['ensemble_size']):
@@ -69,27 +66,24 @@ for i in range(0, config['ensemble_size']):
     train_submodel(submodel, train, config, result_sub_dir)
 
     # Score the model
-    y_score = score(submodel,
-                    train,
-                    test[test_indices_normal],
-                    test[test_indices_anomalous])
-    y_scores.append(y_score)
+    y_score_train, y_score_test = score(submodel, train, test)
+    y_scores_list.append(y_score_test)
 
-    auc_score = compute_auc_score(y_score, y_true, print_result=True)
+    auc_score = compute_auc_score(y_score_test, y_true, print_result=True)
 
     # Save results
     store_results(result_sub_dir,
                   {
-                      'y_score': y_score,
+                      'y_score': y_score_test,
                       'auc_score': auc_score,
                       'lag_indices_per_channel': lag_indices_per_channel
                   })
 
-    pprint(f'Time for run {i}: {time.process_time() - st}')
+    # print(f'Time for run {i}: {time.process_time() - st}')
 
 # Ensemble score
 print('Ensemble score:')
-y_score_final = compute_ensemble_score(np.array(y_scores))
+y_score_final = compute_ensemble_score(np.array(y_scores_list))
 auc_score_final = compute_auc_score(y_score_final, y_true, print_result=True)
 
-pprint(f'Final time {time.process_time() - st}')
+# print(f'Final time {time.process_time() - st}')
