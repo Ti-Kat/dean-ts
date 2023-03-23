@@ -12,7 +12,7 @@ from submodel_dean_basic import build_submodel, train_submodel, score
 st = time.process_time()
 
 # Load parameter configuration and specify dataset
-dataset_name = 'point_global'
+dataset_name = 'guten_tag_uts_1'
 
 # Load data
 complete_dataset = load_dataset(dataset_name, 'numpy')
@@ -52,6 +52,8 @@ for i in range(0, config['ensemble_size']):
     # Add values from chosen time steps as features
     transformed_set = add_lag_features(dataset, lag_indices_per_channel)
 
+    # print(f'Runtime for run {i} after Transformed dataset: {time.process_time() - st}')
+
     # Split into train and test
     train, test = split_train_test(transformed_set, test_ratio=config['test_ratio'])
 
@@ -63,8 +65,9 @@ for i in range(0, config['ensemble_size']):
                               reg=None,
                               act='relu',
                               mean=1.0)
+    # print(f'Runtime for run {i} after Build submodel: {time.process_time() - st}')
     train_submodel(submodel, train, config, result_sub_dir)
-
+    # print(f'Runtime for run {i} after Train submodel: {time.process_time() - st}')
     # Score the model
     y_score_train, y_score_test = score(submodel, train, test)
     y_scores_list.append(y_score_test)
@@ -76,14 +79,14 @@ for i in range(0, config['ensemble_size']):
                   {
                       'y_score': y_score_test,
                       'auc_score': auc_score,
-                      'lag_indices_per_channel': lag_indices_per_channel
+                      'lag_indices_per_channel': lag_indices_per_channel,
                   })
 
-    # print(f'Time for run {i}: {time.process_time() - st}')
+    # print(f'Runtime for run {i}: {time.process_time() - st}')
 
 # Ensemble score
 print('Ensemble score:')
 y_score_final = compute_ensemble_score(np.array(y_scores_list))
 auc_score_final = compute_auc_score(y_score_final, y_true, print_result=True)
 
-# print(f'Final time {time.process_time() - st}')
+print(f'Total runtime: {time.process_time() - st}')

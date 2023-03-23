@@ -22,6 +22,8 @@ DATASET_MAPPING = {
     'collective_global': 'tods/uts/collective_global_0.05.csv',
     'collective_trend': 'tods/uts/collective_trend_0.05.csv',
     'collective_seasonal': 'tods/uts/collective_seasonal_0.05.csv',
+
+    'guten_tag_uts_1': 'gutenTag/test.csv'
 }
 
 
