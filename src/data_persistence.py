@@ -11,23 +11,11 @@ RESULT_BASE_PATH = config['result_path']
 DATASET_BASE_PATH = config['dataset_path']
 
 DATASET_MAPPING = {
-    'gecco': 'gecco_iot/gecco_iot.csv',
-
-    'twitter': 'nab/twitter_numenta_kaggle.csv',
-    'art_daily': 'nab/art_daily_flatmiddle.csv',
-
-    'point_global': 'tods/uts/point_global_0.05.csv',
-    'point_contextual': 'tods/uts/point_contextual_0.05.csv',
-
-    'collective_global': 'tods/uts/collective_global_0.05.csv',
-    'collective_trend': 'tods/uts/collective_trend_0.05.csv',
-    'collective_seasonal': 'tods/uts/collective_seasonal_0.05.csv',
-
     'guten_tag_uts_1': 'gutenTag/test.csv'
 }
 
 
-def load_dataset(dataset_name: str = 'twitter', return_format: str = 'pandas'):
+def load_dataset(dataset_name: str = 'guten_tag_uts_1', return_format: str = 'pandas'):
     """ Loads the specified dataset and returns it either as numpy array or pandas dataframe
 
     @param dataset_name: Specifies the dataset, default is the twitter numenta dataset from kaggle

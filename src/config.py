@@ -16,8 +16,8 @@ class Config:
             setattr(self, k, data.get(k))
 
         # Set base configuration
-        np.random.seed(self['seed'])
-        keras.utils.set_random_seed(self['seed'])
+        # np.random.seed(self['seed'])
+        # keras.utils.set_random_seed(self['seed'])
 
     def __getitem__(self, key):
         return getattr(self, key)
