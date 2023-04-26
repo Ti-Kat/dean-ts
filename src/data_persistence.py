@@ -11,36 +11,44 @@ RESULT_BASE_PATH = config['result_path']
 DATASET_BASE_PATH = config['dataset_path']
 
 DATASET_MAPPING = {
-    'guten_tag_uts_1': 'gutenTag/test.csv'
+    'guten_tag_uts': {
+        'test': 'gutenTag/uts/test.csv',
+        'train': 'gutenTag/uts/train_no_anomaly.csv',
+        'train_anomaly': 'gutenTag/uts/train_anomaly.csv',
+    },
+    'guten_tag_mts': {
+        'test': 'gutenTag/mts/test.csv',
+        'train': 'gutenTag/mts/train_no_anomaly.csv',
+        'train_anomaly': 'gutenTag/mts/train_anomaly.csv',
+    },
 }
 
 
-def load_dataset(dataset_name: str = 'guten_tag_uts_1', return_format: str = 'pandas'):
+def load_dataset(dataset_name: str = 'guten_tag_uts', return_format: str = 'pandas'):
     """ Loads the specified dataset and returns it either as numpy array or pandas dataframe
 
     @param dataset_name: Specifies the dataset, default is the twitter numenta dataset from kaggle
     @param return_format: Either 'pandas' or 'numpy'
     """
-    if dataset_name in DATASET_MAPPING:
-        file_path = DATASET_BASE_PATH + DATASET_MAPPING[dataset_name]
-    else:
+    if dataset_name not in DATASET_MAPPING:
         sys.exit('Unknown dataset')
 
-    # TODO: Unify dataset composition (time, values, anomaly)
-    df = pd.read_csv(
-        file_path,
-        # index_col='time',
-    )
+    data_sets = {}
+    for key in ['test', 'train', 'train_anomaly']:
+        dataset_path = DATASET_BASE_PATH + DATASET_MAPPING[dataset_name][key]
 
-    # df = pd.read_csv(
-    #     file_path,
-    #     index_col='timestamp',
-    #     parse_dates=['timestamp'])
+        df = pd.read_csv(
+            dataset_path,
+            # index_col='timestamp',
+            # parse_dates=['timestamp']
+        )
 
-    if return_format == 'numpy':
-        df = df.to_numpy()
+        if return_format == 'numpy':
+            df = df.to_numpy()
 
-    return df
+        data_sets[key] = df
+
+    return data_sets
 
 
 def create_result_dir(dataset_name: str, model_index: int = None):

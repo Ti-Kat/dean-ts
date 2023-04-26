@@ -3,6 +3,13 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 
+def standardize(test: np.ndarray, train: np.ndarray) -> (np.ndarray, np.ndarray):
+    scaler = StandardScaler()
+    train = scaler.fit_transform(train)
+    test = scaler.transform(test)
+    return test, train
+
+
 def create_lag_feature(arr: np.ndarray, channel: int, lag: int, replace_value=np.nan) -> np.ndarray:
     """ Creates a lag feature by efficiently shifting a numpy array and potentially replacing the pushed out values
 
@@ -22,27 +29,26 @@ def create_lag_feature(arr: np.ndarray, channel: int, lag: int, replace_value=np
     return e
 
 
-def split_train_test(arr: np.ndarray, test_ratio: float = 0.2, standardize: bool = True) -> (np.ndarray, np.ndarray):
+def add_lag_features(arr: np.ndarray, lag_indices) -> np.ndarray:
+    result = arr.copy()
+    for lag in lag_indices:
+        for feature_index in range(arr.shape[1]):
+            lag_feature = create_lag_feature(arr, feature_index, lag)
+            result = np.c_[result, lag_feature]
+    return result
+
+
+def split_train_test(arr: np.ndarray, test_ratio: float = 0.2, standardization: bool = True) -> (
+        np.ndarray, np.ndarray):
     # Split according to ratio
     split_index = int(arr.shape[0] * (1 - test_ratio))
     train, test = arr[0:split_index], arr[split_index:]
 
     # Standardize to zero mean and unit variance
-    if standardize:
-        scaler = StandardScaler()
-        train = scaler.fit_transform(train)
-        test = scaler.transform(test)
-
-    return train, test
-
-
-def add_lag_features(arr: np.ndarray, lag_indices_per_channel: dict) -> np.ndarray:
-    result = arr.copy()
-    for channel, lag_indices in lag_indices_per_channel.items():
-        for lag in lag_indices:
-            feature = create_lag_feature(arr, channel, lag)
-            result = np.c_[result, feature]
-    return result
+    if standardization:
+        return standardize(test, train)
+    else:
+        return train, test
 
 
 def normalize_pandas(df: pd.DataFrame) -> pd.DataFrame:

@@ -10,12 +10,12 @@ Usable either as standalone method or in combination with [TimeEval](https://git
 - [TimeEval-GUI](https://github.com/HPI-Information-Systems/TimeEval-GUI)
 - [GutenTAG](https://github.com/HPI-Information-Systems/gutentag)
 - [GutenTAG Doc](https://github.com/HPI-Information-Systems/gutentag/blob/main/doc/index.md)
-
+- [Evaluation Paper](https://hpi-information-systems.github.io/timeeval-evaluation-paper/)
 
 ## Usage
 
 ### Configuration
-- Use `config/configuration.yaml` to specify meta informations
+- Use `config/configuration.yaml` to specify meta information
 - Use ``
 
 ### Running
@@ -32,7 +32,6 @@ Usable either as standalone method or in combination with [TimeEval](https://git
 
 ### DeanTsEnsemble
 - submodels: dict [(level, index): model]
-- storage_manager
 - data_train
 - data_test
 - config
