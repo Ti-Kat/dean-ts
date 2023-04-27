@@ -34,7 +34,7 @@ class DeanTsSubmodel:
         for units in unit_sizes[1:-1]:
             outputs = Dense(units,
                             activation=act,
-                            use_bias=True,
+                            use_bias=False,
                             kernel_initializer=keras.initializers.TruncatedNormal(),
                             kernel_regularizer=reg)(outputs)
 
