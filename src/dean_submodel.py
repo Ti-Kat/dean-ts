@@ -97,6 +97,9 @@ class DeanTsLagModel:
         # Calculate deviation of predictions to q
         test_deviations = np.abs(predict_test_singular - self.q)
 
+        # Scale to [0,1]
+        test_deviations /= np.max(test_deviations)
+
         self.scores_window = test_deviations
         self.reverse_window(test.shape)
 
