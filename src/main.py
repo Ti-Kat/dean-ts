@@ -33,9 +33,15 @@ if __name__ == '__main__':
     y_score = controller.predict()
 
     # Print results
-    print('Ensemble score:')
+    print('\nEnsemble score:')
     auc_score_final = compute_auc_score(y_score=y_score,
                                         y_true=y_true,
                                         print_result=True)
 
-    print(f'Total runtime: {time.time() - st}')
+    print('\nModel scores:')
+    for y_score_model in controller.ensemble.submodel_scores:
+        compute_auc_score(y_score=y_score_model,
+                          y_true=y_true,
+                          print_result=True)
+
+    print(f'\nTotal runtime: {time.time() - st}')
