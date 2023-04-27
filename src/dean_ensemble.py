@@ -1,14 +1,15 @@
 import numpy as np
 
 from src.config import Config
+from src.data_processing import standardize
 from src.dean_submodel import DeanTsSubmodel
 
 
 class DeanTsEnsemble:
     def __init__(self, config: Config, test_data: np.ndarray, train_data: np.ndarray):
         self.config = config
-        self.test_data = test_data
-        self.train_data = train_data
+        self.test_data, self.train_data = standardize(test_data,
+                                                      train_data)
         self.submodels: dict[int, DeanTsSubmodel] = {}
         self.submodel_scores = np.zeros(shape=(config['ensemble_size'], test_data.shape[0]))
         self.ensemble_score = np.zeros(shape=test_data.shape[0])
