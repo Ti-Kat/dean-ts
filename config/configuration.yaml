@@ -4,11 +4,11 @@
 result_path: '../results'                # Relative base path for DEAN-TS results and model information
 dataset_path: '../datasets/'             # Relative base path for datasets
 seed: 21                                 # Randomness seed for reproducible results
-ensemble_size: 4                        # Number of models to train
+ensemble_size: 50                        # Number of models to train
 
 # Submodel specifications
 lr: 0.03            # Learning rate
-batch: 32           # Batch size
+batch: 16           # Batch size
 depth: 3            # Number of layers for each base detector network
-bag: 16              # Dimensionality for each base model (bag - 1 lag features will be chosen)
-look_back: 128       # How many previous time steps are taken into consideration for feature selection
+bag: 64              # Dimensionality for each base model (bag - 1 lag features will be chosen)
+look_back: 256       # How many previous time steps are taken into consideration for feature selection
