@@ -2,7 +2,7 @@ import numpy as np
 
 from src.config import Config
 from src.data_processing import standardize
-from src.dean_submodel import DeanTsSubmodel
+from src.dean_submodel import DeanTsLagModel
 
 
 class DeanTsEnsemble:
@@ -10,7 +10,7 @@ class DeanTsEnsemble:
         self.config = config
         self.test_data, self.train_data = standardize(test_data,
                                                       train_data)
-        self.submodels: dict[int, DeanTsSubmodel] = {}
+        self.submodels: dict[int, DeanTsLagModel] = {}
         self.submodel_scores = np.zeros(shape=(config['ensemble_size'], test_data.shape[0]))
         self.ensemble_score = np.zeros(shape=test_data.shape[0])
 
@@ -24,7 +24,7 @@ class DeanTsEnsemble:
                                            size=self.config['bag'] - 1,
                                            replace=False)
 
-            submodel = DeanTsSubmodel(lag_indices=lag_indices,
+            submodel = DeanTsLagModel(lag_indices=lag_indices,
                                       look_back=self.config['look_back'])
 
             submodel.build_submodel([self.config['bag'] * channel_count] * self.config['depth'])

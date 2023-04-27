@@ -9,7 +9,7 @@ import numpy as np
 from src.data_processing import add_lag_features
 
 
-class DeanTsSubmodel:
+class DeanTsLagModel:
     def __init__(self, lag_indices, look_back):
         self.lag_indices = lag_indices
         self.look_back = look_back
