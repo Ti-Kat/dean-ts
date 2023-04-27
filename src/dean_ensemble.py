@@ -1,18 +1,18 @@
 import numpy as np
+from sklearn.preprocessing import StandardScaler
 
-from src.config import Config
-from src.data_processing import standardize
 from src.dean_submodel import DeanTsLagModel
 
 
 class DeanTsEnsemble:
-    def __init__(self, config: Config, test_data: np.ndarray, train_data: np.ndarray):
+    def __init__(self, config: dict, train_data: np.ndarray):
+        self.ensemble_score = None
         self.config = config
-        self.test_data, self.train_data = standardize(test_data,
-                                                      train_data)
+        self.scaler = StandardScaler()
+        self.train_data = self.scaler.fit_transform(train_data)
+
         self.submodels: dict[int, DeanTsLagModel] = {}
-        self.submodel_scores = np.zeros(shape=(config['ensemble_size'], test_data.shape[0]))
-        self.ensemble_score = np.zeros(shape=test_data.shape[0])
+        self.submodel_scores = None
 
     def train_models(self):
         # Drop "timestamp" and "is_anomaly" columns
@@ -33,9 +33,12 @@ class DeanTsEnsemble:
 
             self.submodels[i] = submodel
 
-    def predict_with_submodels(self):
+    def predict_with_submodels(self, test_data: np.ndarray):
         # Drop "timestamp" and "is_anomaly" columns
-        test_data = np.delete(self.test_data, obj=[0, -1], axis=1)
+        test_data = np.delete(test_data, obj=[0, -1], axis=1)
+
+        # Standardize
+        test_data = self.scaler.transform(test_data)
 
         for i in range(0, self.config['ensemble_size']):
             submodel = self.submodels[i]

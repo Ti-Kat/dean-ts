@@ -1,39 +1,28 @@
 import argparse
-from dataclasses import dataclass, asdict, field
+from dataclasses import dataclass, asdict
 import json
 import numpy as np
 import pandas as pd
 import sys
-from typing import List
 
 from src.dean_controller import DeanTsController
 
 
 @dataclass
 class CustomParameters:
-    linear_layer_shape: List[int] = field(default_factory=lambda: [100, 10])
-    activation: str = "relu"
-    split: float = 0.8
-    anomaly_window_size: int = 20
-    batch_size: int = 64
-    test_batch_size: int = 256
-    epochs: int = 1
-    early_stopping_delta: float = 0.05
-    early_stopping_patience: int = 10
-    learning_rate: float = 0.001
-    n_neighbors: int = 12
-    n_estimators: int = 3
-    random_state: int = 42
+    seed: int = 21  # Randomness seed for reproducible results
+    ensemble_size: int = 2  # Number of lag models
+    lr: float = 0.03  # Learning rate
+    batch: int = 32  # Batch size
+    depth: int = 3  # Number of layers for each base detector network
+    bag: int = 64  # Dimensionality for each base model (bag - 1 lag features will be chosen)
+    look_back: int = 256  # How many previous time steps are taken into consideration for feature selection
 
 
 class AlgorithmArgs(argparse.Namespace):
     @property
     def ts(self) -> np.ndarray:
-        return self.df.iloc[:, 1:-1].values
-
-    @property
-    def df(self) -> pd.DataFrame:
-        return pd.read_csv(self.dataInput)
+        return pd.read_csv(self.dataInput).to_numpy()
 
     @staticmethod
     def from_sys_args() -> 'AlgorithmArgs':
@@ -44,24 +33,24 @@ class AlgorithmArgs(argparse.Namespace):
         args["customParameters"] = CustomParameters(**filtered_parameters)
         return AlgorithmArgs(**args)
 
+
 def train(args: AlgorithmArgs):
-    data = args.ts
-    parameters = asdict(args.customParameters)
-    controller = DeanTsController(**parameters)
+    train_data = args.ts
+    config = asdict(args.customParameters)
+    controller = DeanTsController(config, train=train_data)
     controller.train()
     controller.save(args.modelOutput)
 
-def execute(args: AlgorithmArgs):
-    data = args.ts
-    controller = DeanTsController.load(args.modelInput)
-    anomaly_scores = controller.predict(data)
-    anomaly_scores.tofile(args.dataOutput, sep="\n")
 
+def execute(args: AlgorithmArgs):
+    test_data = args.ts
+    controller = DeanTsController.load(args.modelInput)
+    anomaly_scores = controller.predict(test_data)
+    anomaly_scores.tofile(args.dataOutput, sep="\n")
 
 
 if __name__ == "__main__":
     args = AlgorithmArgs.from_sys_args()
-    set_random_state(args)
 
     if args.executionType == "train":
         train(args)

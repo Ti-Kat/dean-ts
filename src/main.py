@@ -1,15 +1,18 @@
 import time
 
-from config import config
+from config import create_config_from_yaml
 from data_persistence import load_dataset, create_result_dir, store_general_information
+from src.utils.plotting import plot_line_plotly
 from src.utils.scoring import compute_auc_score
 from dean_controller import DeanTsController
+import numpy as np
 
 if __name__ == '__main__':
     st = time.time()
 
     # Load parameter configuration and specify dataset
-    dataset_name = 'guten_tag_mts'
+    dataset_name = 'guten_tag_uts'
+    config = create_config_from_yaml()
 
     # Load data
     datasets = load_dataset(dataset_name, 'numpy')
@@ -24,17 +27,17 @@ if __name__ == '__main__':
     store_general_information(result_dir, dataset_name, config)
 
     # Init controller
-    controller = DeanTsController(config, train_data, test_data, dataset_name)
+    controller = DeanTsController(config, train_data, dataset_name)
     # controller = DeanTsController.load(result_dir)
 
     # Train ensemble on train data
     controller.train()
 
     # Score test data
-    y_score = controller.predict()
+    y_score = controller.predict(test_data)
 
     # Store model
-    controller.save(result_dir)
+    # controller.save(result_dir)
 
     # Print results
     print('\nEnsemble score:')
@@ -46,5 +49,7 @@ if __name__ == '__main__':
         compute_auc_score(y_score=y_score_model,
                           y_true=y_true,
                           print_result=True)
+
+    plot_line_plotly(np.c_[test_data, y_score])
 
     print(f'\nTotal runtime: {time.time() - st}')

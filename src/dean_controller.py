@@ -1,13 +1,19 @@
+import numpy as np
+import tensorflow.keras as keras
+
 from src.dean_ensemble import DeanTsEnsemble
 import pickle
 
 
 class DeanTsController:
-    def __init__(self, config, test, train, dataset_name=None, verbose=False):
+    def __init__(self, config: dict, train: np.ndarray, dataset_name=None, verbose=False):
         self.config = config
+        np.random.seed(config['seed'])
+        keras.utils.set_random_seed(config['seed'])
+
         self.dataset_name = dataset_name
         self.verbose = verbose
-        self.ensemble = DeanTsEnsemble(config, test, train)
+        self.ensemble = DeanTsEnsemble(config, train)
 
     @staticmethod
     def load(path, verbose=True) -> 'DeanTsController':
@@ -25,10 +31,10 @@ class DeanTsController:
             print('Start training submodels \n')
         self.ensemble.train_models()
 
-    def predict(self):
+    def predict(self, test_data):
         if self.verbose:
             print('Start prediction for submodels \n')
-        self.ensemble.predict_with_submodels()
+        self.ensemble.predict_with_submodels(test_data[:, 1:-1])
 
         if self.verbose:
             print('Compute ensemble score\n')
