@@ -15,8 +15,6 @@ class DeanTsEnsemble:
         self.ensemble_score = np.zeros(shape=test_data.shape[0])
 
     def train_models(self):
-        print('Start training submodels \n')
-
         # Drop "timestamp" and "is_anomaly" columns
         train_data = np.delete(self.train_data, obj=[0, -1], axis=1)
         channel_count = train_data.shape[1]
@@ -36,8 +34,6 @@ class DeanTsEnsemble:
             self.submodels[i] = submodel
 
     def predict_with_submodels(self):
-        print('Start prediction for submodels \n')
-
         # Drop "timestamp" and "is_anomaly" columns
         test_data = np.delete(self.test_data, obj=[0, -1], axis=1)
 

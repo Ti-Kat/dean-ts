@@ -25,6 +25,7 @@ if __name__ == '__main__':
 
     # Init controller
     controller = DeanTsController(config, train_data, test_data, dataset_name)
+    # controller = DeanTsController.load(result_dir)
 
     # Train ensemble on train data
     controller.train()
@@ -32,12 +33,14 @@ if __name__ == '__main__':
     # Score test data
     y_score = controller.predict()
 
+    # Store model
+    controller.save(result_dir)
+
     # Print results
     print('\nEnsemble score:')
     auc_score_final = compute_auc_score(y_score=y_score,
                                         y_true=y_true,
                                         print_result=True)
-
     print('\nModel scores:')
     for y_score_model in controller.ensemble.submodel_scores:
         compute_auc_score(y_score=y_score_model,

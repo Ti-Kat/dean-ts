@@ -58,7 +58,8 @@ def create_result_dir(dataset_name: str, model_index: int = None):
         result_dir = f'{RESULT_BASE_PATH}/{dataset_name}/{model_index}'
 
     if os.path.isdir(result_dir):
-        shutil.rmtree(result_dir)
+        return result_dir
+        # shutil.rmtree(result_dir)
     os.makedirs(result_dir, exist_ok=False)
 
     return result_dir
