@@ -10,3 +10,4 @@ RUN pip install -r /app/requirements.txt
 
 # add algorithm implementation
 COPY algorithm.py /app/
+COPY src /app/src

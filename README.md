@@ -21,6 +21,9 @@ Usable either as standalone method or in combination with [TimeEval](https://git
 ### Running
 - Use `main.py` to train an ensemble according to the configuration
 
+## Building Docker image for TimeEval
+- `docker build -t dean-ts:latest Dockerfile`
+
 ## DEAN-TS Architecture
 
 ### DeanTsController

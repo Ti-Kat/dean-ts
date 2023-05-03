@@ -5,20 +5,22 @@ from src.dean_submodel import DeanTsLagModel
 
 
 class DeanTsEnsemble:
-    def __init__(self, config: dict, train_data: np.ndarray):
-        self.ensemble_score = None
-        self.config = config
-        self.scaler = StandardScaler()
-        self.train_data = self.scaler.fit_transform(train_data)
-
+    def __init__(self, config: dict):
+        self.config: dict = config
+        self.scaler: StandardScaler = StandardScaler()
         self.submodels: dict[int, DeanTsLagModel] = {}
-        self.submodel_scores = None
 
-    def train_models(self):
+        self.submodel_scores: np.ndarray | None = None
+        self.ensemble_score: np.ndarray | None = None
+
+    def train_models(self, train_data: np.ndarray):
         # Drop "timestamp" and "is_anomaly" columns
-        train_data = np.delete(self.train_data, obj=[0, -1], axis=1)
-        channel_count = train_data.shape[1]
+        train_data = np.delete(train_data, obj=[0, -1], axis=1)
 
+        # Standardize training data and prepare scaler
+        train_data = self.scaler.fit_transform(train_data)
+
+        channel_count = train_data.shape[1]
         for i in range(0, self.config['ensemble_size']):
             lag_indices = np.random.choice(range(1, self.config['look_back']),
                                            size=self.config['bag'] - 1,
@@ -37,9 +39,10 @@ class DeanTsEnsemble:
         # Drop "timestamp" and "is_anomaly" columns
         test_data = np.delete(test_data, obj=[0, -1], axis=1)
 
-        # Standardize
+        # Standardize test data by scaler fitted to training data
         test_data = self.scaler.transform(test_data)
 
+        self.submodel_scores = np.zeros(shape=(self.config['ensemble_size'], test_data.shape[0]))
         for i in range(0, self.config['ensemble_size']):
             submodel = self.submodels[i]
             submodel.score(test_data)

@@ -11,7 +11,7 @@ from src.dean_controller import DeanTsController
 @dataclass
 class CustomParameters:
     seed: int = 21  # Randomness seed for reproducible results
-    ensemble_size: int = 2  # Number of lag models
+    ensemble_size: int = 20  # Number of lag models
     lr: float = 0.03  # Learning rate
     batch: int = 32  # Batch size
     depth: int = 3  # Number of layers for each base detector network
@@ -37,8 +37,8 @@ class AlgorithmArgs(argparse.Namespace):
 def train(args: AlgorithmArgs):
     train_data = args.ts
     config = asdict(args.customParameters)
-    controller = DeanTsController(config, train=train_data)
-    controller.train()
+    controller = DeanTsController(config)
+    controller.train(train_data)
     controller.save(args.modelOutput)
 
 

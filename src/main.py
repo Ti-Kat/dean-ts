@@ -27,17 +27,17 @@ if __name__ == '__main__':
     store_general_information(result_dir, dataset_name, config)
 
     # Init controller
-    controller = DeanTsController(config, train_data, dataset_name)
-    # controller = DeanTsController.load(result_dir)
+    controller = DeanTsController(config, verbose=True)
+    # controller = DeanTsController.load(result_dir + '/model.p')
 
     # Train ensemble on train data
-    controller.train()
+    controller.train(train_data)
 
     # Score test data
     y_score = controller.predict(test_data)
 
     # Store model
-    # controller.save(result_dir)
+    # controller.save(result_dir + '/model.p')
 
     # Print results
     print('\nEnsemble score:')
@@ -50,6 +50,7 @@ if __name__ == '__main__':
                           y_true=y_true,
                           print_result=True)
 
-    plot_line_plotly(np.c_[test_data, y_score])
+    # Plot result interactively
+    # plot_line_plotly(np.c_[test_data, y_score])
 
     print(f'\nTotal runtime: {time.time() - st}')
