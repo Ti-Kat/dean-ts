@@ -48,5 +48,11 @@ class DeanTsEnsemble:
             submodel.score(test_data)
             self.submodel_scores[i, self.config['look_back']:] = submodel.scores_window
 
-    def compute_ensemble_score(self):
-        self.ensemble_score = np.mean(self.submodel_scores, axis=0)
+    def compute_ensemble_score(self, method='average'):
+        # TODO: Add AOM, Thresh and other suitable candidates
+        if method == 'average':
+            self.ensemble_score = np.mean(self.submodel_scores, axis=0)
+        elif method == 'max':
+            self.ensemble_score = np.max(self.submodel_scores, axis=0)
+        elif method == 'thresh':
+            pass
