@@ -13,7 +13,7 @@ class CustomParameters:
     seed: int = 21  # Randomness seed for reproducible results
     ensemble_size: int = 20  # Number of lag models
     lr: float = 0.03  # Learning rate
-    batch: int = 32  # Batch size
+    batch: int = 16  # Batch size
     depth: int = 3  # Number of layers for each base detector network
     bag: int = 64  # Dimensionality for each base model (bag - 1 lag features will be chosen)
     look_back: int = 256  # How many previous time steps are taken into consideration for feature selection
