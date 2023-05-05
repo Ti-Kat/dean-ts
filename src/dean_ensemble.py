@@ -35,7 +35,7 @@ class DeanTsEnsemble:
 
             self.submodels[i] = submodel
 
-    def predict_with_submodels(self, test_data: np.ndarray):
+    def predict_with_submodels(self, test_data: np.ndarray, reverse_window=True):
         # Drop "timestamp" and "is_anomaly" columns
         test_data = np.delete(test_data, obj=[0, -1], axis=1)
 
@@ -46,13 +46,21 @@ class DeanTsEnsemble:
         for i in range(0, self.config['ensemble_size']):
             submodel = self.submodels[i]
             submodel.score(test_data)
-            self.submodel_scores[i, self.config['look_back']:] = submodel.scores_window
+            if reverse_window:
+                self.submodel_scores[i] = submodel.scores
+            else:
+                self.submodel_scores[i, self.config['look_back']:] = submodel.scores_window
 
-    def compute_ensemble_score(self, method='average'):
-        # TODO: Add AOM, Thresh and other suitable candidates
+    def compute_ensemble_score(self, method='thresh', weights=None, threshold=0):
         if method == 'average':
-            self.ensemble_score = np.mean(self.submodel_scores, axis=0)
+            self.ensemble_score = np.average(self.submodel_scores, weights=weights, axis=0)
         elif method == 'max':
             self.ensemble_score = np.max(self.submodel_scores, axis=0)
+        elif method == 'median':
+            self.ensemble_score = np.median(self.submodel_scores, axis=0)
         elif method == 'thresh':
-            pass
+            from scipy.stats import zscore
+            z_scores = zscore(self.submodel_scores, axis=1)
+            z_scores[z_scores < threshold] = 0
+            z_score_sum = np.sum(z_scores, axis=0)
+            self.ensemble_score = z_score_sum / np.max(z_score_sum)
