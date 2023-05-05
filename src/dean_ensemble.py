@@ -13,7 +13,7 @@ class DeanTsEnsemble:
         self.submodel_scores: np.ndarray | None = None
         self.ensemble_score: np.ndarray | None = None
 
-    def train_models(self, train_data: np.ndarray):
+    def train_models(self, train_data: np.ndarray, subsampling=None, train_range=None):
         # Drop "timestamp" and "is_anomaly" columns
         train_data = np.delete(train_data, obj=[0, -1], axis=1)
 
@@ -25,9 +25,16 @@ class DeanTsEnsemble:
             lag_indices = np.random.choice(range(1, self.config['look_back']),
                                            size=self.config['bag'] - 1,
                                            replace=False)
+            if subsampling == 'VS':
+                lower = 1000
+                upper = 5000
+                train_size = np.random.randint(lower, upper + 1)
+                train_start_index = np.random.randint(0, train_data.shape[0] - train_size)
+                train_range = (train_start_index, train_start_index + train_size)
 
             submodel = DeanTsLagModel(lag_indices=lag_indices,
-                                      look_back=self.config['look_back'])
+                                      look_back=self.config['look_back'],
+                                      train_range=train_range)
 
             submodel.build_submodel([self.config['bag'] * channel_count] * self.config['depth'])
 

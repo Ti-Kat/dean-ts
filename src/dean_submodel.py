@@ -10,9 +10,10 @@ from src.data_processing import add_lag_features
 
 
 class DeanTsLagModel:
-    def __init__(self, lag_indices, look_back):
+    def __init__(self, lag_indices, look_back, train_range):
         self.lag_indices = lag_indices
         self.look_back = look_back
+        self.train_range = train_range
         self.q: float = 1.0
 
         self.model: Model | None = None
@@ -62,6 +63,9 @@ class DeanTsLagModel:
         """
         # Preprocess train data
         train_data = self.preprocess_data(train_data)
+
+        if self.train_range:
+            train_data = train_data[self.train_range[0]:self.train_range[1]]
 
         # Define callbacks
         cbs = [keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True),
