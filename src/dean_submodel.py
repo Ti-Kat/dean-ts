@@ -75,11 +75,12 @@ class DeanTsLagModel:
                                       epochs=epochs,
                                       batch_size=batch_size,
                                       validation_split=validation_split,
+                                      shuffle=False,
                                       verbose=verbosity,
                                       callbacks=cbs)
         # Set q
         predict_train = self.model.predict(train_data)
-        predict_train_singular = np.mean(predict_train, axis=-1)
+        predict_train_singular = np.mean(predict_train, axis=1)
         self.q = np.mean(predict_train_singular)
 
     def score(self, test: np.ndarray):
@@ -104,6 +105,14 @@ class DeanTsLagModel:
         self.reverse_window(test.shape)
 
     def reverse_window(self, test_shape):
-        # TODO: Implement this
-        scores = np.zeros(test_shape[0])
-        self.scores = scores
+        scores = np.zeros(test_shape[0] + self.look_back)
+        denominators = np.zeros(test_shape[0] + self.look_back)
+        indices = np.full(shape=self.lag_indices.shape[0], fill_value=self.look_back) - self.lag_indices
+        indices = np.append(indices, [self.look_back])
+
+        for i, _ in enumerate(self.scores_window):
+            scores[indices + i] += self.scores_window[i]
+            denominators[indices + i] += 1
+
+        np.maximum(denominators, 1, out=denominators)
+        self.scores = scores / denominators
