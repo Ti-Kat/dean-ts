@@ -13,7 +13,7 @@ class DeanTsEnsemble:
         self.submodel_scores: np.ndarray | None = None
         self.ensemble_score: np.ndarray | None = None
 
-    def train_models(self, train_data: np.ndarray, subsampling=None, train_range=None):
+    def train_models(self, train_data: np.ndarray, subsampling=None, feature_bagging=False):
         # Drop "timestamp" and "is_anomaly" columns
         train_data = np.delete(train_data, obj=[0, -1], axis=1)
 
@@ -25,20 +25,33 @@ class DeanTsEnsemble:
             lag_indices = np.random.choice(range(1, self.config['look_back']),
                                            size=self.config['bag'] - 1,
                                            replace=False)
-            if subsampling == 'VS':
-                lower = 1000
-                upper = 5000
-                train_size = np.random.randint(lower, upper + 1)
+            train_range = None
+            if subsampling == 'vs':
+                train_size = np.random.randint(self.config['vs_lower'],
+                                               self.config['vs_upper'] + 1)
                 train_start_index = np.random.randint(0, train_data.shape[0] - train_size)
                 train_range = (train_start_index, train_start_index + train_size)
 
+            features = None
+            feature_count = channel_count
+            if feature_bagging and channel_count > 1:
+                lower = min(self.config['fb_lower'], channel_count)
+                upper = min(self.config['fb_upper'], channel_count)
+                feature_count = np.random.randint(lower, upper+1)
+                features = np.random.choice(range(0, channel_count),
+                                            size=feature_count,
+                                            replace=False)
+
             submodel = DeanTsLagModel(lag_indices=lag_indices,
                                       look_back=self.config['look_back'],
-                                      train_range=train_range)
+                                      train_range=train_range,
+                                      features=features)
 
-            submodel.build_submodel([self.config['bag'] * channel_count] * self.config['depth'])
+            submodel.build_submodel([self.config['bag'] * feature_count] * self.config['depth'],
+                                    lr=self.config['lr'],
+                                    bias=self.config['bias'])
 
-            submodel.train(train_data)
+            submodel.train(train_data, batch_size=self.config['batch'])
 
             self.submodels[i] = submodel
 
@@ -68,6 +81,6 @@ class DeanTsEnsemble:
         elif method == 'thresh':
             from scipy.stats import zscore
             z_scores = zscore(self.submodel_scores, axis=1)
-            z_scores[z_scores < threshold] = 0
+            z_scores[z_scores < threshold] = self.config['thresh_value']
             z_score_sum = np.sum(z_scores, axis=0)
             self.ensemble_score = z_score_sum / np.max(z_score_sum)

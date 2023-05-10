@@ -10,10 +10,11 @@ from src.data_processing import add_lag_features
 
 
 class DeanTsLagModel:
-    def __init__(self, lag_indices, look_back, train_range):
+    def __init__(self, lag_indices, look_back, train_range, features):
         self.lag_indices = lag_indices
         self.look_back = look_back
         self.train_range = train_range
+        self.features = features
         self.q: float = 1.0
 
         self.model: Model | None = None
@@ -22,10 +23,12 @@ class DeanTsLagModel:
         self.scores_window: np.ndarray | None = None
 
     def preprocess_data(self, data):
+        if self.features is not None:
+            data = data[:, self.features]
         data = add_lag_features(data, self.lag_indices)
         return data[self.look_back:]
 
-    def build_submodel(self, unit_sizes, reg=None, act='relu', mean=1.0, lr=0.01):
+    def build_submodel(self, unit_sizes, reg=None, act='relu', mean=1.0, lr=0.01, bias=False):
         """ Builds basic dean submodel
         """
         # Sett DNN architecture
@@ -35,7 +38,7 @@ class DeanTsLagModel:
         for units in unit_sizes[1:-1]:
             outputs = Dense(units,
                             activation=act,
-                            use_bias=False,
+                            use_bias=bias,
                             kernel_initializer=keras.initializers.TruncatedNormal(),
                             kernel_regularizer=reg)(outputs)
 
@@ -104,6 +107,9 @@ class DeanTsLagModel:
 
         # Scale to [0,1]
         test_deviations /= np.max(test_deviations)
+
+        # Fail-safe if max was 0
+        test_deviations[np.isnan(test_deviations)] = 0
 
         self.scores_window = test_deviations
         self.reverse_window(test.shape)

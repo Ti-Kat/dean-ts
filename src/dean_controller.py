@@ -29,14 +29,16 @@ class DeanTsController:
     def train(self, train_data):
         if self.verbose:
             print('Start training submodels \n')
-        self.ensemble.train_models(train_data)
+        self.ensemble.train_models(train_data,
+                                   subsampling=self.config['subsampling'],
+                                   feature_bagging=self.config['feature_bagging'])
 
     def predict(self, test_data):
         if self.verbose:
             print('Start prediction for submodels \n')
-        self.ensemble.predict_with_submodels(test_data)
+        self.ensemble.predict_with_submodels(test_data, reverse_window=self.config['reverse_window'])
 
         if self.verbose:
             print('Compute ensemble score\n')
-        self.ensemble.compute_ensemble_score()
+        self.ensemble.compute_ensemble_score(method=self.config['combination_method'])
         return self.ensemble.ensemble_score

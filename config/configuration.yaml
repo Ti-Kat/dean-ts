@@ -1,14 +1,28 @@
-# Parameter configuration
-
 # General specifications
 result_path: '../results'                # Relative base path for DEAN-TS results and model information
 dataset_path: '../datasets/'             # Relative base path for datasets
 seed: 21                                 # Randomness seed for reproducible results
-ensemble_size: 50                        # Number of models to train
+
+# Ensemble specifications
+ensemble_size: 100                        # Number of models to train
+reverse_window: True                     # Whether to assign the window scores of the submodels to the lag feature positions as well
+
+combination_method: 'thresh'             # Score combination method, potential values: 'thresh', 'average', 'max', 'median'
+thresh_value: 0                          # Lower bound for Z-Score to be considered
+
+subsampling: None                        # Subsampling method, potential values: None, 'vs', 'structured'
+vs_lower: 500                            # Min sample size for variable subsampling
+vs_upper: 5000                           # Max sample size for variable subsampling
+
+feature_bagging: False                   # Whether to use feature bagging for MTS
+fb_lower: 1                              # Min feature count for feature bagging
+fb_upper: 5                              # Max feature count for feature bagging
 
 # Submodel specifications
-lr: 0.03            # Learning rate
-batch: 16           # Batch size
-depth: 3            # Number of layers for each base detector network
-bag: 64              # Dimensionality for each base model (bag - 1 lag features will be chosen)
-look_back: 256       # How many previous time steps are taken into consideration for feature selection
+bias: False                              # Whether to allow learnable shift in hidden layers
+depth: 3                                 # Number of layers for each base detector network
+bag: 128                                 # Lag feature count per dimension for each base model (bag - 1 lag features will be chosen)
+look_back: 256                           # How many previous time steps are taken into consideration for feature selection
+
+lr: 0.01                                 # Learning rate
+batch: 32                                # Batch size
