@@ -40,17 +40,18 @@ if __name__ == '__main__':
     # controller.save(result_dir + '/model.p')
 
     # Print results
-    print('\nEnsemble score:')
-    auc_score_final = compute_auc_score(y_score=y_score,
-                                        y_true=y_true,
-                                        print_result=True)
     print('\nModel scores:')
     for y_score_model in controller.ensemble.submodel_scores:
         compute_auc_score(y_score=y_score_model,
                           y_true=y_true,
                           print_result=True)
 
+    print('\nEnsemble score:')
+    auc_score_final = compute_auc_score(y_score=y_score,
+                                        y_true=y_true,
+                                        print_result=True)
+
     # Plot result interactively
-    # plot_line_plotly(np.c_[test_data, y_score])
+    plot_line_plotly(np.c_[test_data, y_score, controller.ensemble.submodel_scores.T], config, dataset_name)
 
     print(f'\nTotal runtime: {time.time() - st}')
