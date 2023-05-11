@@ -4,17 +4,17 @@ dataset_path: '../datasets/'             # Relative base path for datasets
 seed: 21                                 # Randomness seed for reproducible results
 
 # Ensemble specifications
-ensemble_size: 100                        # Number of models to train
+ensemble_size: 50                        # Number of models to train
 reverse_window: True                     # Whether to assign the window scores of the submodels to the lag feature positions as well
 
 combination_method: 'thresh'             # Score combination method, potential values: 'thresh', 'average', 'max', 'median'
 thresh_value: 0                          # Lower bound for Z-Score to be considered
 
-subsampling: None                        # Subsampling method, potential values: None, 'vs', 'structured'
+subsampling: 'none'                        # Subsampling method, potential values: 'none', 'vs', 'structured'
 vs_lower: 500                            # Min sample size for variable subsampling
 vs_upper: 5000                           # Max sample size for variable subsampling
 
-feature_bagging: False                   # Whether to use feature bagging for MTS
+feature_bagging: True                   # Whether to use feature bagging for MTS
 fb_lower: 1                              # Min feature count for feature bagging
 fb_upper: 5                              # Max feature count for feature bagging
 

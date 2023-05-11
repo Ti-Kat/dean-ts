@@ -11,12 +11,30 @@ from src.dean_controller import DeanTsController
 @dataclass
 class CustomParameters:
     seed: int = 21  # Randomness seed for reproducible results
+
+    # Ensemble specifications
     ensemble_size: int = 50  # Number of lag models
-    lr: float = 0.03  # Learning rate
-    batch: int = 16  # Batch size
+    reverse_window: bool = True
+
+    combination_method: str = 'thresh'  # Score combination method, options: 'thresh', 'average', 'max', 'median'
+    thresh_value: int = 0  # Lower bound for Z-Score to be considered
+
+    subsampling: str = 'none'  # Subsampling method, potential values: 'none', 'vs', 'structured'
+    vs_lower: int = 500  # Min sample size for variable subsampling
+    vs_upper: int = 5000  # Max sample size for variable subsampling
+
+    feature_bagging: bool = True  # Whether to use feature bagging for MTS
+    fb_lower: int = 1  # Min feature count for feature bagging
+    fb_upper: int = 5  # Max feature count for feature bagging
+
+    # Submodel specifications
+    bias: bool = False  # Whether to allow learnable shift in hidden layers
     depth: int = 3  # Number of layers for each base detector network
     bag: int = 128  # Dimensionality for each base model (bag - 1 lag features will be chosen)
     look_back: int = 256  # How many previous time steps are taken into consideration for feature selection
+
+    lr: float = 0.01  # Learning rate
+    batch: int = 32  # Batch size
 
 
 class AlgorithmArgs(argparse.Namespace):
