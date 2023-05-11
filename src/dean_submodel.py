@@ -28,7 +28,7 @@ class DeanTsLagModel:
         data = add_lag_features(data, self.lag_indices)
         return data[self.look_back:]
 
-    def build_submodel(self, unit_sizes, reg=None, act='relu', mean=1.0, lr=0.01, bias=False):
+    def build_submodel(self, unit_sizes, reg=None, act='elu', mean=1.0, lr=0.01, bias=False):
         """ Builds basic dean submodel
         """
         # Sett DNN architecture
@@ -75,7 +75,7 @@ class DeanTsLagModel:
                keras.callbacks.TerminateOnNaN()]
 
         # Print model summary
-        # model.summary()
+        # self.model.summary()
 
         # Train the model
         self.history = self.model.fit(train_data, None,

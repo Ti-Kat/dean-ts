@@ -31,6 +31,8 @@ class DeanTsEnsemble:
                                                self.config['vs_upper'] + 1)
                 train_start_index = np.random.randint(0, train_data.shape[0] - train_size)
                 train_range = (train_start_index, train_start_index + train_size)
+            elif subsampling == 'fixed':
+                pass
 
             features = None
             feature_count = channel_count
