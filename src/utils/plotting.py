@@ -1,6 +1,11 @@
 import plotly.express as px
 
 
-def plot_line_plotly(data, config, dataset_name):
-    fig = px.line(data[:, 1:], labels=[''], title=dataset_name + "<br>" + str(config))
+def plot_line_plotly(data, dataset_name, score, config):
+    title = f"""
+    Dataset: {str(dataset_name)} <br>
+    Score:  {str(score)} <br>
+    Config: {str(config)}
+    """
+    fig = px.line(data[:, 1:], labels=[''], title=title)
     fig.show()

@@ -37,7 +37,7 @@ if __name__ == '__main__':
     y_score = controller.predict(test_data)
 
     # Store model
-    controller.save(result_dir + '/model.pkl')
+    # controller.save(result_dir + '/model.pkl')
 
     # Print results
     print('\nModel scores:')
@@ -52,6 +52,6 @@ if __name__ == '__main__':
                                         print_result=True)
 
     # Plot result interactively
-    plot_line_plotly(np.c_[test_data, y_score, controller.ensemble.submodel_scores.T], config, dataset_name)
+    plot_line_plotly(np.c_[test_data, y_score, controller.ensemble.submodel_scores.T], dataset_name, auc_score_final, config)
 
     print(f'\nTotal runtime: {time.time() - st}')
