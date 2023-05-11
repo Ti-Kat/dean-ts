@@ -30,6 +30,7 @@ class CustomParameters:
     # Submodel specifications
     bias: bool = False  # Whether to allow learnable shift in hidden layers
     depth: int = 3  # Number of layers for each base detector network
+    activation: str = 'elu'  # Which activation function to use in hidden layers
     bag: int = 128  # Dimensionality for each base model (bag - 1 lag features will be chosen)
     look_back: int = 256  # How many previous time steps are taken into consideration for feature selection
 

@@ -50,6 +50,7 @@ class DeanTsEnsemble:
                                       features=features)
 
             submodel.build_submodel([self.config['bag'] * feature_count] * self.config['depth'],
+                                    act=self.config['activation'],
                                     lr=self.config['lr'],
                                     bias=self.config['bias'])
 
