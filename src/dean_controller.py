@@ -3,6 +3,7 @@ import tensorflow.keras as keras
 
 from src.dean_ensemble import DeanTsEnsemble
 import pickle
+import json
 
 
 class DeanTsController:
@@ -16,14 +17,17 @@ class DeanTsController:
         self.ensemble = DeanTsEnsemble(config)
 
     @staticmethod
-    def load(path, verbose=True) -> 'DeanTsController':
+    def load(path: str, verbose=True) -> 'DeanTsController':
         if verbose:
             print('\n Load model:')
         return pickle.load(open(path, 'rb'))
 
-    def save(self, path):
+    def save(self, path: str):
         if self.verbose:
             print('\n Save model:')
+        with open(path.replace('model.pkl', 'config.json'), 'w') as f:
+            f.write(json.dumps(self.config, indent=4))
+
         pickle.dump(self, open(path, 'wb'))
 
     def train(self, train_data):

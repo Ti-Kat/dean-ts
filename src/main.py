@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
     # Init controller
     controller = DeanTsController(config, verbose=True)
-    # controller = DeanTsController.load(result_dir + '/model.p')
+    # controller = DeanTsController.load(result_dir + '/model.pkl')
 
     # Train ensemble on train data
     controller.train(train_data)
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     y_score = controller.predict(test_data)
 
     # Store model
-    # controller.save(result_dir + '/model.p')
+    controller.save(result_dir + '/model.pkl')
 
     # Print results
     print('\nModel scores:')
