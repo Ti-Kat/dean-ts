@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Own
+Pipfile
+Pipfile.lock
+.idea
+results/*

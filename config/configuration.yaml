@@ -1,0 +1,30 @@
+# General specifications
+random_state: 21                         # Randomness seed for reproducible results
+
+# Ensemble specifications
+ensemble_size: 10                        # Number of submodels to train
+reverse_window: True                     # Whether to assign the window scores of the submodels to the lag feature positions as well (default)
+
+tsd: True                                # Whether to apply STL time series decomposition as preprocessing step (only for UTS)
+period: 20                               # Periodicity for STL (currently not automatically determined)
+
+combination_method: 'thresh'             # Score combination method, potential values: 'thresh', 'average', 'max', 'median', 'dean'
+thresh_value: 0                          # Lower bound for Z-Score to be considered in thresh method
+
+feature_bagging: True                    # Whether to use feature bagging for MTS
+fb_range: [1,3]                          # Min and max number of features for feature bagging
+
+subsampling: 'none'                      # Subsampling method, potential values: 'none', 'random', 'structured'
+rs_range: [1024,8192]                    # Min and max number of samples for random subsampling
+ss_r: [0.25, 0.5]                        # Percentage splits of total data for structured subsampling  (Has to fit ensemble_size and training data length)
+ss_m: [1, 3]                             # Number of times each split percentage ss_r should process the entire time series (Has to fit ensemble_size and training data length)
+
+# Submodel specifications
+bias: False                              # Whether to allow learnable shift in hidden layers
+depth: 3                                 # Number of layers for each base detector network
+activation: 'relu'                       # Which activation function to use in hidden layers
+lag_indices_count: 63                    # Lag feature count per dimension for each base model
+look_back_range: [64, 512]               # Range of how many previous time steps are randomly taken into consideration for lag feature selection
+
+lr: 0.01                                 # Learning rate
+batch: 32                                # Batch size
