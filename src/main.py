@@ -1,7 +1,8 @@
 import time
 
 from config import create_config_from_yaml
-from dean_controller import DeanTsController
+from src.dean_controller import DeanTsController
+from src.dean_interpreter import DeanTsInterpreter
 from src.utils.data_exploration import plot_result_interactive, plot_roc_curve, plot_pr_curve
 from src.utils.data_persistence import load_dataset, create_result_dir, get_period
 from src.utils.scoring import compute_auc_score
@@ -67,3 +68,8 @@ if __name__ == '__main__':
 
     plot_roc_curve(y_true, y_score)
     plot_pr_curve(y_true, y_score)
+
+    # Plot TSD feature combination importance (depends on a suitably large ensemble size for robust results)
+    interpreter = DeanTsInterpreter(controller)
+    interpreter.compute_importance()
+    interpreter.plot_importance_scores(3800, 3899)
