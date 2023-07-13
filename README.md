@@ -1,8 +1,8 @@
 # DEAN-TS
 
-This repository provides an implementation of the **Deep Ensemble Anomaly Detection for Time Series (DEAN-TS)** method, which I developed as part of my master thesis.
+This repository provides an implementation of the **Deep Ensemble Anomaly Detection for Time Series (DEAN-TS)** method that I developed as part of my master thesis.
 It is based on [Deep Ensemble Anomaly Detection (DEAN)](https://github.com/KDD-OpenSource/DEAN) and, as the name suggests,
-transfers its concepts to the application to time series.
+applies its concepts to time series.
 
 ## Example usage
 
