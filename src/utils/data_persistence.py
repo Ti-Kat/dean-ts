@@ -103,8 +103,8 @@ DATASET_MAPPING = {
 }
 
 
-def load_dataset(dataset_name: str = 'guten_tag_uts', return_format: str = 'numpy'):
-    """ Loads the specified dataset and returns it either as numpy array or pandas dataframe
+def load_dataset(dataset_name: str = 'ecg-noise-10%', return_format: str = 'numpy'):
+    """Loads the specified dataset and returns it either as numpy array or pandas dataframe
 
     @param dataset_name: Specifies the dataset
     @param return_format: Either 'pandas' or 'numpy'
@@ -131,6 +131,7 @@ def load_dataset(dataset_name: str = 'guten_tag_uts', return_format: str = 'nump
 
 
 def get_period(dataset_name: str):
+    """Gets the periodicity value of a dataset"""
     if dataset_name not in DATASET_MAPPING:
         sys.exit('Unknown dataset')
     else:
@@ -138,6 +139,7 @@ def get_period(dataset_name: str):
 
 
 def create_result_dir(dataset_name: str, model_index: int = None):
+    """Creates a results directory for the current run to potentially persist the results and run configuration"""
     if model_index is None:
         result_dir = f'{RESULT_BASE_PATH}/{dataset_name}'
     else:

@@ -19,11 +19,13 @@ class DeanTsController:
 
     @staticmethod
     def load(path: str, verbose=True) -> 'DeanTsController':
+        """Load pickled controller from given path"""
         if verbose:
             print('\nLoad model')
         return pickle.load(open(path, 'rb'))
 
     def save(self, path: str):
+        """Store controller as model.pkl for given path"""
         if self.verbose:
             print('\nSave model')
         with open(path.replace('model.pkl', 'config.json'), 'w') as f:

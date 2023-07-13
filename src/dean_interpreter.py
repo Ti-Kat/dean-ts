@@ -12,7 +12,7 @@ class DeanTsInterpreter:
         self.importance_df: pd.DataFrame | None = None
 
     def plot_importance_scores(self, start_index: int, end_index: int):
-        """ Plots the importance score per feature combinations for a given range of time steps as bar plot.
+        """Plots the importance score per feature combinations for a given range of time steps as bar plot.
         Depends on calling `compute_importance` beforehand.
         """
         # Compute average over specified range
@@ -54,7 +54,7 @@ class DeanTsInterpreter:
         plt.show()
 
     def compute_importance(self):
-        """ Computes importance scores for each feature combination for each datapoint and stores it in a pandas df.
+        """Computes importance scores for each feature combination for each datapoint and stores it in a pandas df.
         Assumes that TSD was used.
         """
         df_data = []

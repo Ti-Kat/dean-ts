@@ -15,6 +15,7 @@ class DeanTsEnsemble:
         self.ensemble_score: np.ndarray | None = None
 
     def train_models(self, train_data: np.ndarray, subsampling=None, feature_bagging=False):
+        # Potentially apply TSD
         if self.config['tsd']:
             decomposition = STL(train_data[:, 1], period=self.config['period']).fit()
             trend = decomposition.trend
@@ -61,7 +62,7 @@ class DeanTsEnsemble:
             if subsampling == 'structured':
                 train_range = train_ranges[i]
 
-            # Feature bagging
+            # Apply feature bagging
             features = None
             feature_count = channel_count
             if feature_bagging and channel_count > 1:
@@ -88,6 +89,7 @@ class DeanTsEnsemble:
             self.submodels[i] = submodel
 
     def predict_with_submodels(self, test_data: np.ndarray, reverse_window=True):
+        # Potentially apply TSD
         if self.config['tsd']:
             decomposition = STL(test_data[:, 1], period=self.config['period']).fit()
             trend = decomposition.trend
@@ -101,6 +103,7 @@ class DeanTsEnsemble:
         # Standardize test data by scaler fitted to training data
         test_data = self.scaler.transform(test_data)
 
+        # Set submodel scores
         self.submodel_scores = np.zeros(shape=(self.config['ensemble_size'], test_data.shape[0]))
         for i in range(0, self.config['ensemble_size']):
             submodel = self.submodels[i]
@@ -111,6 +114,7 @@ class DeanTsEnsemble:
                 self.submodel_scores[i, submodel.look_back:] = submodel.scores_window
 
     def compute_ensemble_score(self, method='thresh', weights=None, threshold=0):
+        # Compute ensemble prediction based on the selected combination method
         if method == 'average':
             ensemble_score = np.average(self.submodel_scores, weights=weights, axis=0)
         elif method == 'dean':

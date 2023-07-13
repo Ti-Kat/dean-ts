@@ -21,6 +21,7 @@ class DeanTsSubmodel:
         self.scores_window: np.ndarray | None = None
 
     def preprocess_data(self, data):
+        """Prepares input data by prepending previous observations according to the specified lag indices"""
         def create_lag_feature(arr: np.ndarray, channel: int, lag: int, replace_value=np.nan) -> np.ndarray:
             e = np.empty((arr.shape[0]))
             if lag >= 0:
@@ -48,8 +49,7 @@ class DeanTsSubmodel:
         return data[self.look_back:]
 
     def build_submodel(self, unit_sizes, reg=None, act='elu', mean=1.0, lr=0.01, bias=False):
-        """ Builds basic dean submodel
-        """
+        """Builds basic dean submodel"""
         # Set MLP architecture
         inputs = Input(shape=(unit_sizes[0],))
 
@@ -89,8 +89,7 @@ class DeanTsSubmodel:
         self.model = model
 
     def train(self, train_data: np.ndarray, epochs=500, batch_size=32, validation_split=0.25, verbosity=0):
-        """ Trains submodel and sets history object
-        """
+        """Trains submodel and sets history object"""
         # Preprocess train data
         train_data = self.preprocess_data(train_data)
 
@@ -118,8 +117,7 @@ class DeanTsSubmodel:
         self.q = np.mean(predict_train_singular)
 
     def score(self, test: np.ndarray):
-        """ Scores test data and sets scores_window and scores accordingly
-        """
+        """Scores test data and sets scores_window and scores accordingly"""
         # Preprocess test data
         test = self.preprocess_data(test)
 
@@ -139,6 +137,9 @@ class DeanTsSubmodel:
         self.reverse_window(test.shape)
 
     def reverse_window(self, test_shape):
+        """Reverse the input windows so that each initial data point is assigned the
+        average score over each window it was part of
+        """
         scores = np.zeros(test_shape[0] + self.look_back)
         denominators = np.zeros(test_shape[0] + self.look_back)
         indices = np.full(shape=self.lag_indices.shape[0], fill_value=self.look_back) - self.lag_indices
