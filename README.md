@@ -17,12 +17,12 @@ transfers its concepts to the application to time series.
 
 ## TimeEval / GutenTAG
 
-In the context of my master thesis, a substantial part of the evaluation is performed with the benchmark tool [TimeEval](https://github.com/HPI-Information-Systems/TimeEval),
+A substantial part of the evaluation in my master thesis is performed with the benchmark tool [TimeEval](https://github.com/HPI-Information-Systems/TimeEval),
 among others on synthetic datasets generated with the generation tool [GutenTAG](https://github.com/HPI-Information-Systems/gutentag) by the same developers.
-In particular, DEAN-TS expects an input formatting defined as there.
-Some of the synthetic datasets used are included in `datasets/ecg` for straightforward experimentation with DEAN-TS.
+In particular, DEAN-TS expects input formatting as defined there.
+Some of the synthetic datasets used are included in `datasets/ecg` for easy experimentation with DEAN-TS.
 
-Information on the integration of DEAN-TS in TimeEval can be found [here](https://github.com/Ti-Kat/dean-ts/blob/main/timeeval/README.md).
+Information on the integration of DEAN-TS into TimeEval can be found [here](https://github.com/Ti-Kat/dean-ts/blob/main/timeeval/README.md).
 
 ### Useful links: 
 - [TimeEval](https://github.com/HPI-Information-Systems/TimeEval)
