@@ -12,8 +12,8 @@ applies its concepts to time series.
 ### Configuration
 - Specify parameterization of DEAN-TS in `config/configuration.yaml`.
 
-### Running
-- Specify the details of the execution and apply DEAN-TS by customizing `src/main.py` and then execute it.
+### Execution
+- Specify the execution details and apply DEAN-TS by customising `src/main.py` and then running it, e.g. via `python main.py`.
 
 ## TimeEval / GutenTAG
 
