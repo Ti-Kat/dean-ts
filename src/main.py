@@ -7,7 +7,7 @@ from src.utils.data_exploration import plot_result_interactive, plot_roc_curve, 
 from src.utils.data_persistence import load_dataset, create_result_dir, get_period
 from src.utils.scoring import compute_auc_score
 
-# Select dataset (see src.utils.data_persistence for more options)
+# Select dataset (see ../datasets for more options and corresponding plots)
 dataset_name = 'ecg-noise-10%'
 
 if __name__ == '__main__':
